@@ -45,7 +45,7 @@ def run(context):
         # Show welcome message
         welcome_msg = ("Welcome to the Fusion 'Fusion 360 -> ROS 2 URDF Script' plugin.\n"
                        "\n"
-                       "This tool generates a robot_description package along with launch files for visualizing your robot in Rviz and spawning the model in Gazebo Sim.\n"
+                       "This tool generates a robot_description package with launch files for visualizing your robot in Rviz and spawning the model in Gazebo Sim.\n"
                        "\n"
                        "It has been tested with ROS 2 Jazzy and Gazebo Harmonic, as well as ROS 2 Humble with both Gazebo Classic and Gazebo Sim.\n\n"
                        "\n"
