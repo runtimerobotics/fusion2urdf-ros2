@@ -290,3 +290,26 @@ def write_gazebo_launch(package_name, robot_name, save_dir):
     file_name = os.path.join(save_dir, 'launch', 'gazebo.launch.py')
     with open(file_name, mode='w') as f:
         f.write(file_text)
+
+
+def write_gazebo_sim_launch(package_name, robot_name, save_dir):
+    """
+    write gazebo launch file "save_dir/launch/gazebo.launch"
+
+
+    Parameter
+    ---------
+    robot_name: str
+        name of the robot
+    save_dir: str
+        path of the repository to save
+    """
+
+    try: os.mkdir(save_dir + '/launch')
+    except: pass
+
+    file_text = launch_templates.get_gazebo_sim_launch_text(package_name, robot_name)
+
+    file_name = os.path.join(save_dir, 'launch', 'gazebo.launch.py')
+    with open(file_name, mode='w') as f:
+        f.write(file_text)
