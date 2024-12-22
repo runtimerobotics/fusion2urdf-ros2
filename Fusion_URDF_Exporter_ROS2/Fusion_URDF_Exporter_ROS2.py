@@ -71,22 +71,104 @@ def run(context):
             pass
 
         # Ask for Gazebo version
-        gazebo_msg = "Are you using Gazebo 11? Press Yes for Gazebo 11, No for Gazebo Sim."
+        gazebo_msg = "Are you using Gazebo Harmonic? Press Yes for Gazebo Harmonic, No for Gazebo Classic (Legacy)."
         if ui.messageBox(gazebo_msg, title, adsk.core.MessageBoxButtonTypes.YesNoButtonType) == adsk.core.DialogResults.DialogYes:
-            generate_urdf_gazebo11(save_dir)
-        else:
-            generate_urdf_gazebo_sim(save_dir)
+            #Gazebo Harmonic
 
-        ui.messageBox(success_msg, title)
+            package_dir = os.path.abspath(os.path.dirname(__file__)) + '/package/'
+
+            # --------------------
+            # set dictionaries
+
+            # Generate joints_dict. All joints are related to root.
+            joints_dict, msg = Joint.make_joints_dict(root, msg)
+            if msg != success_msg:
+                ui.messageBox(msg, title)
+                return 0
+
+            # Generate inertial_dict
+            inertial_dict, msg = Link.make_inertial_dict(root, msg)
+            if msg != success_msg:
+                ui.messageBox(msg, title)
+                return 0
+            elif not 'base_link' in inertial_dict:
+                msg = 'There is no base_link. Please set base_link and run again.'
+                ui.messageBox(msg, title)
+                return 0
+
+            links_xyz_dict = {}
+
+            # --------------------
+            # Generate URDF
+            Write.write_urdf(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_materials_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_transmissions_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_gazebo_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_display_launch(package_name, robot_name, save_dir)
+            Write.write_gazebo_launch(package_name, robot_name, save_dir)
+
+            # copy over package files
+            utils.create_package(package_name, save_dir, package_dir)
+            utils.update_setup_py(save_dir, package_name)
+            utils.update_setup_cfg(save_dir, package_name)
+            utils.update_package_xml(save_dir, package_name)
+
+            # Generate STl files
+            #utils.copy_occs(root)
+            utils.export_stl(design, save_dir, components)
+
+            success_msg = 'Successfully created URDF file and launch file for Gazebo Harmonic'
+            ui.messageBox(success_msg, title)
+
+        else:
+            #Gazebo Classic
+            package_dir = os.path.abspath(os.path.dirname(__file__)) + '/package/'
+
+            # --------------------
+            # set dictionaries
+
+            # Generate joints_dict. All joints are related to root.
+            joints_dict, msg = Joint.make_joints_dict(root, msg)
+            if msg != success_msg:
+                ui.messageBox(msg, title)
+                return 0
+
+            # Generate inertial_dict
+            inertial_dict, msg = Link.make_inertial_dict(root, msg)
+            if msg != success_msg:
+                ui.messageBox(msg, title)
+                return 0
+            elif not 'base_link' in inertial_dict:
+                msg = 'There is no base_link. Please set base_link and run again.'
+                ui.messageBox(msg, title)
+                return 0
+
+            links_xyz_dict = {}
+
+            # --------------------
+            # Generate URDF
+            Write.write_urdf(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_materials_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_transmissions_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_gazebo_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_display_launch(package_name, robot_name, save_dir)
+            Write.write_gazebo_launch(package_name, robot_name, save_dir)
+
+            # copy over package files
+            utils.create_package(package_name, save_dir, package_dir)
+            utils.update_setup_py(save_dir, package_name)
+            utils.update_setup_cfg(save_dir, package_name)
+            utils.update_package_xml(save_dir, package_name)
+
+            # Generate STl files
+            #utils.copy_occs(root)  
+            utils.export_stl(design, save_dir, components)
+            success_msg = 'Successfully created URDF file and launch file for Gazebo Classic'
+            ui.messageBox(success_msg, title)
+
+
 
     except Exception as e:
         if ui:
             ui.messageBox(f'Failed:\n{str(e)}', title)
 
-def generate_urdf_gazebo11(save_dir):
-    # Function to generate URDF for Gazebo 11
-    pass
-
-def generate_urdf_gazebo_sim(save_dir):
-    # Function to generate URDF for Gazebo Sim
-    pass
