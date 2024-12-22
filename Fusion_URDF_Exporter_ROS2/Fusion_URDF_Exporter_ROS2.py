@@ -102,8 +102,8 @@ def run(context):
             # Generate URDF
             Write.write_urdf(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
             Write.write_materials_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
-            #Write.write_transmissions_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
-            Write.write_gazebo_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_transmissions_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
+            Write.write_gazebo_sim_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name, robot_name, save_dir)
             Write.write_display_launch(package_name, robot_name, save_dir)
             Write.write_gazebo_sim_launch(package_name, robot_name, save_dir)
 
@@ -114,7 +114,7 @@ def run(context):
             utils.update_package_xml(save_dir, package_name)
 
             # Generate STl files
-            #utils.copy_occs(root)
+            utils.copy_occs(root)
             utils.export_stl(design, save_dir, components)
 
             success_msg = 'Successfully created URDF file and launch file for Gazebo Harmonic'
@@ -161,7 +161,7 @@ def run(context):
             utils.update_package_xml(save_dir, package_name)
 
             # Generate STl files
-            #utils.copy_occs(root)  
+            utils.copy_occs(root)  
             utils.export_stl(design, save_dir, components)
             success_msg = 'Successfully created URDF file and launch file for Gazebo Classic'
             ui.messageBox(success_msg, title)
